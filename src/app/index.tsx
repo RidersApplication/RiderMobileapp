@@ -1,98 +1,145 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  StatusBar,
+  SafeAreaView,
+  Dimensions,
+} from "react-native";
+import { useRouter } from "expo-router";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+const { width } = Dimensions.get("window");
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+const COLORS = {
+  primary: "#FF9D42",
+  white: "#FFFFFF",
+  black: "#1F2937",
+};
+
+export default function WelcomeScreen() {
+  const router = useRouter();
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <>
+      <StatusBar barStyle="light-content" />
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <ImageBackground
+        source={require("../../assets/img (1).png")}
+        resizeMode="cover"
+        style={styles.background}
+      >
+        <View style={styles.overlay} />
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("../../assets/Layer_1 (1).png")}
+              resizeMode="contain"
+              style={styles.logo}
+            />
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+            
+          </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.loginButton}
+              onPress={() => router.push("/auth/login")}
+            >
+              <Text style={styles.loginText}>Login</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.registerButton}
+              onPress={() => router.push("/auth/register")}
+            >
+              <Text style={styles.registerText}>Register</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => router.push("/auth/register")}
+            >
+              <Text style={styles.driverText}>Want to be a driver?</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </ImageBackground>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: "rgba(0,0,0,0.35)",
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
   },
-  safeArea: {
+  logoContainer: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  logo: {
+    width: width * 0.32,
+    height: width * 0.32,
+    marginTop: 300,
+    marginLeft: 10,
   },
-  title: {
-    textAlign: 'center',
+  
+  buttonContainer: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 20,
   },
-  code: {
-    textTransform: 'uppercase',
+  loginButton: {
+    width: 320,
+    height: 58,
+    backgroundColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+    marginBottom: 18,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  loginText: {
+    color: COLORS.white,
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  registerButton: {
+    width: 320,
+    height: 58,
+    backgroundColor: COLORS.white,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+    marginBottom: 28,
+  },
+  registerText: {
+    color: COLORS.black,
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  driverText: {
+    color: COLORS.white,
+    fontSize: 17,
+    textAlign: "center",
+    fontWeight: "500",
   },
 });
