@@ -15,6 +15,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import BottomTab from "../components/bottom-tab";
 
+import AppHeader from "../components/app-header";
+
 export default function MapHomeScreen() {
   const router = useRouter();
   const [destination, setDestination] = useState("T Building Wuse 2");
@@ -27,30 +29,7 @@ export default function MapHomeScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#222" />
-        </TouchableOpacity>
-
-        <View style={styles.userRow}>
-          <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarInitials}>OG</Text>
-          </View>
-
-          <View>
-            <Text style={styles.smallText}>Welcome back</Text>
-            <Text style={styles.name}>Hello, Oge</Text>
-          </View>
-        </View>
-
-        <TouchableOpacity
-          style={styles.notification}
-          activeOpacity={0.8}
-          onPress={() => alert("Notifications")}
-        >
-          <Ionicons name="notifications-outline" size={24} color="#222" />
-        </TouchableOpacity>
-      </View>
+      <AppHeader showBackButton />
 
       <ScrollView
         style={styles.scrollView}

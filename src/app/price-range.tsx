@@ -14,6 +14,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import BottomTab from "../components/bottom-tab";
 
+import AppHeader from "../components/app-header";
+
 export default function PriceRangeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -44,6 +46,7 @@ export default function PriceRangeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <AppHeader showBackButton />
 
       <ScrollView
         style={styles.scrollView}
@@ -51,141 +54,131 @@ export default function PriceRangeScreen() {
         showsVerticalScrollIndicator={false}
       >
 
-      <View style={styles.userSection}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>OG</Text>
-        </View>
-        <View>
-          <Text style={styles.smallText}>Welcome back</Text>
-          <Text style={styles.name}>Hello, Oge</Text>
-        </View>
-      </View>
+        <View style={styles.locationCard}>
+          <Text style={styles.label}>PICKUP LOCATION</Text>
+          <View style={styles.inputRow}>
+            <Ionicons name="location-outline" size={20} color="#FF9D42" />
+            <Text style={styles.locationText}>123 Innovation Drive, Tech Hub</Text>
+          </View>
 
-      <View style={styles.locationCard}>
-        <Text style={styles.label}>PICKUP LOCATION</Text>
-        <View style={styles.inputRow}>
-          <Ionicons name="location-outline" size={20} color="#FF9D42" />
-          <Text style={styles.locationText}>123 Innovation Drive, Tech Hub</Text>
+          <Text style={[styles.label, { marginTop: 18 }]}>DESTINATION</Text>
+          <View style={styles.inputRow}>
+            <Feather name="search" size={18} color="#999" />
+            <TextInput
+              value={destination}
+              editable={false}
+              style={styles.destinationInput}
+            />
+          </View>
         </View>
 
-        <Text style={[styles.label, { marginTop: 18 }]}>DESTINATION</Text>
-        <View style={styles.inputRow}>
-          <Feather name="search" size={18} color="#999" />
-          <TextInput
-            value={destination}
-            editable={false}
-            style={styles.destinationInput}
-          />
-        </View>
-      </View>
+        <View style={styles.priceCard}>
+          <View style={styles.priceHeader}>
+            <View>
+              <Text style={styles.priceTitle}>Set Your Price Range</Text>
+              <Text style={styles.subtitle}>
+                Drivers will bid within this range
+              </Text>
+            </View>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>BIDDING ACTIVE</Text>
+            </View>
+          </View>
 
-      <View style={styles.priceCard}>
-        <View style={styles.priceHeader}>
-          <View>
-            <Text style={styles.priceTitle}>Set Your Price Range</Text>
-            <Text style={styles.subtitle}>
-              Drivers will bid within this range
+          <View style={styles.priceRow}>
+            <View style={styles.priceCardEntry}>
+              <Text style={styles.priceLabel}>Base Price (Min)</Text>
+              <View style={styles.priceBox}>
+                <Text style={styles.amount}>₦ {prices[0]}</Text>
+              </View>
+              <View style={styles.adjustRow}>
+                <TouchableOpacity
+                  style={styles.adjustButton}
+                  onPress={() => updatePrice(0, -STEP)}
+                >
+                  <Text style={styles.adjustText}>-</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.adjustButton}
+                  onPress={() => updatePrice(0, STEP)}
+                >
+                  <Text style={styles.adjustText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.priceCardEntry}>
+              <Text style={styles.priceLabel}>Max Price</Text>
+              <View style={styles.priceBox}>
+                <Text style={styles.amount}>₦ {prices[1]}</Text>
+              </View>
+              <View style={styles.adjustRow}>
+                <TouchableOpacity
+                  style={styles.adjustButton}
+                  onPress={() => updatePrice(1, -STEP)}
+                >
+                  <Text style={styles.adjustText}>-</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.adjustButton}
+                  onPress={() => updatePrice(1, STEP)}
+                >
+                  <Text style={styles.adjustText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.sliderContainer}>
+            <View style={styles.sliderTrack}>
+              <View
+                style={[
+                  styles.sliderFilled,
+                  { left: `${filledLeft}%`, width: `${filledWidth}%` },
+                ]}
+              />
+              <View style={[styles.thumb, { left: `${filledLeft}%` }]} />
+              <View style={[styles.thumb, { left: `${filledLeft + filledWidth}%` }]} />
+            </View>
+          </View>
+
+          <View style={styles.recommendCard}>
+            <Ionicons name="bulb" size={18} color="#FF9D42" />
+            <Text style={styles.recommendText}>
+              Recommended: ₦2,500 - ₦4,000
             </Text>
           </View>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>BIDDING ACTIVE</Text>
+
+          <View style={styles.infoRow}>
+            <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
+            <Text style={styles.infoText}>
+              Price range must have at least ₦1500 difference to attract
+              drivers and improve matching.
+            </Text>
           </View>
         </View>
 
-        <View style={styles.priceRow}>
-          <View style={styles.priceCardEntry}>
-            <Text style={styles.priceLabel}>Base Price (Min)</Text>
-            <View style={styles.priceBox}>
-              <Text style={styles.amount}>₦ {prices[0]}</Text>
-            </View>
-            <View style={styles.adjustRow}>
-              <TouchableOpacity
-                style={styles.adjustButton}
-                onPress={() => updatePrice(0, -STEP)}
-              >
-                <Text style={styles.adjustText}>-</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.adjustButton}
-                onPress={() => updatePrice(0, STEP)}
-              >
-                <Text style={styles.adjustText}>+</Text>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.footer}>
+          <View style={styles.footerItem}>
+            <Ionicons name="time-outline" size={18} color="#444" />
+            <Text style={styles.footerText}>PICKUP IN 4 MINS</Text>
           </View>
-
-          <View style={styles.priceCardEntry}>
-            <Text style={styles.priceLabel}>Max Price</Text>
-            <View style={styles.priceBox}>
-              <Text style={styles.amount}>₦ {prices[1]}</Text>
-            </View>
-            <View style={styles.adjustRow}>
-              <TouchableOpacity
-                style={styles.adjustButton}
-                onPress={() => updatePrice(1, -STEP)}
-              >
-                <Text style={styles.adjustText}>-</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.adjustButton}
-                onPress={() => updatePrice(1, STEP)}
-              >
-                <Text style={styles.adjustText}>+</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.footerItem}>
+            <Ionicons name="location-outline" size={18} color="#444" />
+            <Text style={styles.footerText}>12.4 KM</Text>
           </View>
         </View>
-
-        <View style={styles.sliderContainer}>
-          <View style={styles.sliderTrack}>
-            <View
-              style={[
-                styles.sliderFilled,
-                { left: `${filledLeft}%`, width: `${filledWidth}%` },
-              ]}
-            />
-            <View style={[styles.thumb, { left: `${filledLeft}%` }]} />
-            <View style={[styles.thumb, { left: `${filledLeft + filledWidth}%` }]} />
-          </View>
-        </View>
-
-        <View style={styles.recommendCard}>
-          <Ionicons name="bulb" size={18} color="#FF9D42" />
-          <Text style={styles.recommendText}>
-            Recommended: ₦2,500 - ₦4,000
-          </Text>
-        </View>
-
-        <View style={styles.infoRow}>
-          <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
-          <Text style={styles.infoText}>
-            Price range must have at least ₦1500 difference to attract
-            drivers and improve matching.
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.footer}>
-        <View style={styles.footerItem}>
-          <Ionicons name="time-outline" size={18} color="#444" />
-          <Text style={styles.footerText}>PICKUP IN 4 MINS</Text>
-        </View>
-        <View style={styles.footerItem}>
-          <Ionicons name="location-outline" size={18} color="#444" />
-          <Text style={styles.footerText}>12.4 KM</Text>
-        </View>
-      </View>
-       <TouchableOpacity
-        activeOpacity={0.85}
-        style={styles.button}
-        onPress={() => router.push("/driversoffer")}
-      >
-        <Text style={styles.buttonText}>Find Drivers</Text>
-        <Ionicons name="chevron-forward" size={20} color="#FFF" />
-      </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.button}
+          onPress={() => router.push("/driversoffer")}
+        >
+          <Text style={styles.buttonText}>Find Drivers</Text>
+          <Ionicons name="chevron-forward" size={20} color="#FFF" />
+        </TouchableOpacity>
       </ScrollView>
 
-      
+
       <BottomTab />
     </SafeAreaView>
   );
@@ -194,7 +187,7 @@ export default function PriceRangeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 30,
+
   },
   scrollView: {
     flex: 1,
@@ -261,6 +254,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
     padding: 18,
+    marginTop: 30,
     marginBottom: 18,
     borderWidth: 1,
     borderColor: "#EFEFEF",

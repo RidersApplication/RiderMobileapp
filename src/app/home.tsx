@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -15,122 +15,113 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import BottomTab from "../components/bottom-tab";
 
+import AppHeader from "../components/app-header";
+
 export default function HomeScreen() {
   const router = useRouter();
+  const [isHireHovered, setIsHireHovered] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
+      {/* ================= HEADER ================= */}
+      <AppHeader />
+
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* ================= HEADER ================= */}
-        <View style={styles.header}>
-          <View style={styles.userContainer}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>OG</Text>
-            </View>
-
-            <View>
-              <Text style={styles.welcomeText}>Welcome back</Text>
-              <Text style={styles.name}>Hello, Oge</Text>
-            </View>
-          </View>
-
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.notificationButton}
-            onPress={() => alert("Notifications")}
-          >
-            <Ionicons name="notifications-outline" size={26} color="#333" />
-          </TouchableOpacity>
-        </View>
 
         {/* ================= LOCATION CARD ================= */}
         <View style={styles.locationCard}>
-        <Text style={styles.label}>PICKUP LOCATION</Text>
+          <Text style={styles.label}>PICKUP LOCATION</Text>
 
-        <TouchableOpacity activeOpacity={0.8} style={styles.locationInput}>
-          <Ionicons name="location-outline" size={22} color="#FF9D42" />
-          <Text style={styles.locationText}>123 Innovation Drive, Tech Hub</Text>
-        </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.8} style={styles.locationInput}>
+            <Ionicons name="location-outline" size={22} color="#FF9D42" />
+            <Text style={styles.locationText}>123 Innovation Drive, Tech Hub</Text>
+          </TouchableOpacity>
 
-        <Text style={[styles.label, { marginTop: 18 }]}>DESTINATION</Text>
+          <Text style={[styles.label, { marginTop: 18 }]}>DESTINATION</Text>
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.destinationInput}
-          onPress={() => router.push("/map-home")}
-        >
-          <Feather name="search" size={21} color="#B8B8B8" />
-          <TextInput
-            placeholder="Where are you going?"
-            placeholderTextColor="#B8B8B8"
-            editable={false}
-            style={styles.destinationText}
-          />
-        </TouchableOpacity>
-      </View>
-
-      {/* ================= SERVICES ================= */}
-      <Text style={styles.serviceTitle}>Our Services</Text>
-
-      <View style={styles.serviceRow}>
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={[styles.serviceCard, styles.activeCard]}
-          onPress={() => router.push("/book-ride")}
-        >
-          <View style={styles.iconBox}>
-            <MaterialCommunityIcons name="car" size={26} color="#FF9D42" />
-          </View>
-
-          <Text style={styles.cardTitle}>Book a Ride</Text>
-          <Text style={styles.cardSubtitle}>Instant city travel</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={styles.serviceCard}
-          onPress={() => router.push("/send-package")}
-        >
-          <View style={styles.iconBox}>
-            <MaterialCommunityIcons
-              name="package-variant-closed"
-              size={25}
-              color="#FF9D42"
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.destinationInput}
+            onPress={() => router.push("/map-home")}
+          >
+            <Feather name="search" size={21} color="#B8B8B8" />
+            <TextInput
+              placeholder="Where are you going?"
+              placeholderTextColor="#B8B8B8"
+              editable={false}
+              style={styles.destinationText}
             />
-          </View>
-
-          <Text style={styles.cardTitle}>Send Package</Text>
-          <Text style={styles.cardSubtitle}>Door-to-door delivery</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* ================= HIRE VEHICLE ================= */}
-      <TouchableOpacity
-        activeOpacity={0.85}
-        style={styles.hireCard}
-        onPress={() => router.push("/hire-vehicle")}
-      >
-        <View style={styles.hireLeft}>
-          <View style={styles.iconBox}>
-            <MaterialCommunityIcons
-              name="tow-truck"
-              size={26}
-              color="#FF9D42"
-            />
-          </View>
-
-          <View style={{ marginLeft: 15 }}>
-            <Text style={styles.hireTitle}>Hire Vehicle</Text>
-            <Text style={styles.hireSubtitle}>Heavy duty transport</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.businessBadge}>
-          <Text style={styles.businessText}>BUSINESS</Text>
+        {/* ================= SERVICES ================= */}
+        <Text style={styles.serviceTitle}>Our Services</Text>
+
+        <View style={styles.serviceRow}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={[styles.serviceCard, styles.activeCard]}
+            onPress={() => router.push("/map-home")}
+          >
+            <View style={styles.iconBox}>
+              <MaterialCommunityIcons name="car" size={26} color="#FF9D42" />
+            </View>
+
+            <Text style={styles.cardTitle}>Book a Ride</Text>
+            <Text style={styles.cardSubtitle}>Instant city travel</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.serviceCard}
+            onPress={() => router.push("/send-package/index")}
+          >
+            <View style={styles.iconBox}>
+              <MaterialCommunityIcons
+                name="package-variant-closed"
+                size={25}
+                color="#FF9D42"
+              />
+            </View>
+
+            <Text style={styles.cardTitle}>Send Package</Text>
+            <Text style={styles.cardSubtitle}>Door-to-door delivery</Text>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+
+        {/* ================= HIRE VEHICLE ================= */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={[styles.hireCard, isHireHovered && styles.hireCardHovered]}
+          onPress={() => router.push("/hire-vehicle/register" as any)}
+          onPressIn={() => setIsHireHovered(true)}
+          onPressOut={() => setIsHireHovered(false)}
+          // @ts-ignore - Web hover events
+          onMouseEnter={() => setIsHireHovered(true)}
+          // @ts-ignore - Web hover events
+          onMouseLeave={() => setIsHireHovered(false)}
+        >
+          <View style={styles.hireLeft}>
+            <View style={[styles.iconBox, isHireHovered && { backgroundColor: '#FFEADF' }]}>
+              <MaterialCommunityIcons
+                name="tow-truck"
+                size={26}
+                color="#FF9D42"
+              />
+            </View>
+
+            <View style={{ marginLeft: 15 }}>
+              <Text style={[styles.hireTitle, isHireHovered && { color: '#B8521B' }]}>Hire Vehicle</Text>
+              <Text style={styles.hireSubtitle}>Heavy duty transport</Text>
+            </View>
+          </View>
+
+          <View style={[styles.businessBadge, isHireHovered && { backgroundColor: '#B8521B' }]}>
+            <Text style={styles.businessText}>BUSINESS</Text>
+          </View>
+        </TouchableOpacity>
 
       </ScrollView>
       <BottomTab />
@@ -232,6 +223,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     borderRadius: 18,
     padding: 18,
+    marginTop: 30,
     marginBottom: 28,
     shadowColor: "#000",
     shadowOpacity: 0.06,
@@ -355,6 +347,16 @@ const styles = StyleSheet.create({
     },
     elevation: 2,
     marginBottom: 95,
+    borderWidth: 1.5,
+    borderColor: "#FFFFFF",
+  },
+  hireCardHovered: {
+    backgroundColor: "#FFF0EC",
+    borderColor: "#F07D3B",
+    shadowColor: "#F07D3B",
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 4,
   },
 
   hireLeft: {

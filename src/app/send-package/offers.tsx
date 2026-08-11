@@ -14,7 +14,7 @@ import {
 import { useRouter } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useUser } from '../context/user-context';
+import { useUser } from '../../context/user-context';
 
 interface DriverOfferItem {
   id: string;
@@ -32,7 +32,7 @@ const DRIVER_OFFERS: DriverOfferItem[] = [
   {
     id: 'driver-1',
     name: 'Samuel Green',
-    avatar: require('../../assets/user_avatar.png'),
+    avatar: require('../../../assets/user_avatar.png'),
     carModel: 'Toyota Prius',
     carColor: 'White',
     tripsCount: 1240,
@@ -43,7 +43,7 @@ const DRIVER_OFFERS: DriverOfferItem[] = [
   {
     id: 'driver-2',
     name: 'Samuel Green',
-    avatar: require('../../assets/user_avatar.png'),
+    avatar: require('../../../assets/user_avatar.png'),
     carModel: 'Toyota Corolla',
     carColor: 'White',
     tripsCount: 1240,
@@ -54,7 +54,7 @@ const DRIVER_OFFERS: DriverOfferItem[] = [
   {
     id: 'driver-3',
     name: 'Samuel Green',
-    avatar: require('../../assets/user_avatar.png'),
+    avatar: require('../../../assets/user_avatar.png'),
     carModel: 'Toyota Corolla',
     carColor: 'White',
     tripsCount: 1240,
@@ -64,7 +64,7 @@ const DRIVER_OFFERS: DriverOfferItem[] = [
   },
 ];
 
-export default function DriversOfferScreen() {
+export default function DriverBiddingOffersScreen() {
   const router = useRouter();
   const { user } = useUser();
 
