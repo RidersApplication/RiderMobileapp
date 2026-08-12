@@ -45,7 +45,7 @@ export default function HireRatingScreen() {
 
   const handleFinishRating = () => {
     setThankYouModalVisible(false);
-    router.replace('/home');
+    router.replace('/home' as any);
   };
 
   const handleSubmitReport = () => {

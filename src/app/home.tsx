@@ -44,7 +44,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             activeOpacity={0.8}
             style={styles.destinationInput}
-            onPress={() => router.push("/map-home")}
+            onPress={() => router.push("/map-home" as any)}
           >
             <Feather name="search" size={21} color="#B8B8B8" />
             <TextInput
@@ -63,7 +63,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             activeOpacity={0.85}
             style={[styles.serviceCard, styles.activeCard]}
-            onPress={() => router.push("/map-home")}
+            onPress={() => router.push("/map-home" as any)}
           >
             <View style={styles.iconBox}>
               <MaterialCommunityIcons name="car" size={26} color="#FF9D42" />
@@ -76,7 +76,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             activeOpacity={0.85}
             style={styles.serviceCard}
-            onPress={() => router.push("/send-package/index")}
+            onPress={() => router.push("/send-package/index" as any)}
           >
             <View style={styles.iconBox}>
               <MaterialCommunityIcons

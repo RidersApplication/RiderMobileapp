@@ -37,7 +37,7 @@ export default function DrivingTo() {
 
   const cancelRide = () => {
     setCancelModalVisible(false);
-    router.replace('/home');
+    router.replace('/home' as any);
   };
 
   const handleImHere = () => {

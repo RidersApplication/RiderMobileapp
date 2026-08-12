@@ -123,7 +123,7 @@ export default function UpgradePlanScreen() {
         {/* Cancel and Return Link */}
         <TouchableOpacity
           style={styles.cancelLink}
-          onPress={() => router.replace('/home')}
+          onPress={() => router.replace('/home' as any)}
           activeOpacity={0.7}
         >
           <Text style={styles.cancelLinkText}>Cancel and return</Text>

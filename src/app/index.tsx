@@ -64,7 +64,7 @@ export default function WelcomeScreen() {
 
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => router.push("/auth/register")}
+              onPress={() => router.push("/driver" as any)}
             >
               <Text style={styles.driverText}>Want to be a driver?</Text>
             </TouchableOpacity>

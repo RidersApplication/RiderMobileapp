@@ -23,7 +23,7 @@ export default function FindDriversScreen() {
           Looking for drivers now. This screen is a placeholder until the driver matching flow is implemented.
         </Text>
 
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}> 
+        <TouchableOpacity style={styles.button} onPress={() => router.push("/home" as any)}> 
           <Text style={styles.buttonText}>Back to Home</Text>
         </TouchableOpacity>
       </View>

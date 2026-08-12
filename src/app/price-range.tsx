@@ -171,7 +171,7 @@ export default function PriceRangeScreen() {
         <TouchableOpacity
           activeOpacity={0.85}
           style={styles.button}
-          onPress={() => router.push("/driversoffer")}
+          onPress={() => router.push("/driversoffer" as any)}
         >
           <Text style={styles.buttonText}>Find Drivers</Text>
           <Ionicons name="chevron-forward" size={20} color="#FFF" />

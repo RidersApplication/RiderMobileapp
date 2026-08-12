@@ -32,7 +32,7 @@ export default function LoginScreen() {
       return;
     }
 
-    router.replace('/home');
+    router.replace('/home' as any);
   };
 
   return (
