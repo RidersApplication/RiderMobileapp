@@ -21,10 +21,10 @@ export default function AppTabs() {
       <TabSlot style={{ height: '100%' }} />
       <TabList asChild>
         <CustomTabList>
-          <TabTrigger name="home" href="/" asChild>
+          <TabTrigger name="home" href={"/home" as any} asChild>
             <TabButton>Home</TabButton>
           </TabTrigger>
-          <TabTrigger name="explore" href="/" asChild>
+          <TabTrigger name="explore" href={"/home" as any} asChild>
             <TabButton>Explore</TabButton>
           </TabTrigger>
         </CustomTabList>
@@ -49,7 +49,7 @@ export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps
 
 export function CustomTabList(props: TabListProps) {
   const scheme = useColorScheme();
-  const colors = Colors[scheme === 'unspecified' ? 'light' : scheme];
+  const colors = Colors[scheme === 'dark' ? 'dark' : 'light'];
 
   return (
     <View {...props} style={styles.tabListContainer}>
@@ -65,7 +65,7 @@ export function CustomTabList(props: TabListProps) {
             <ThemedText type="link">Docs</ThemedText>
             <SymbolView
               tintColor={colors.text}
-              name={{ ios: 'arrow.up.right.square', web: 'link' }}
+              name={'link' as any}
               size={12}
             />
           </Pressable>

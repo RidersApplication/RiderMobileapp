@@ -35,15 +35,17 @@ export default function WelcomeScreen() {
         <View style={styles.overlay} />
 
         <SafeAreaView style={styles.container}>
-          <View style={styles.logoContainer}>
+          <TouchableOpacity
+            style={styles.logoContainer}
+            onPress={() => router.push('/admin/login' as any)}
+            activeOpacity={0.8}
+          >
             <Image
               source={require("../../assets/Layer_1 (1).png")}
               resizeMode="contain"
               style={styles.logo}
             />
-
-            
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   overlay: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.35)",
   },
   container: {

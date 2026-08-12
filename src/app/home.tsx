@@ -95,7 +95,7 @@ export default function HomeScreen() {
         <TouchableOpacity
           activeOpacity={0.85}
           style={[styles.hireCard, isHireHovered && styles.hireCardHovered]}
-          onPress={() => router.push("/hire-vehicle/register" as any)}
+          onPress={() => router.push("/hire-vehicle/index" as any)}
           onPressIn={() => setIsHireHovered(true)}
           onPressOut={() => setIsHireHovered(false)}
           // @ts-ignore - Web hover events

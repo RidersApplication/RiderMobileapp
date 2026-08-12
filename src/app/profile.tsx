@@ -12,7 +12,7 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomTab from '../components/bottom-tab';
 import { useUser } from '../context/user-context';
@@ -24,7 +24,7 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     setLogoutModalVisible(false);
-    router.replace('/home');
+    router.replace('/home' as Href);
   };
 
   const handleSavedLocations = () => {

@@ -38,7 +38,7 @@ const HIRE_VEHICLES: VehicleHireItem[] = [
     availableCount: 10,
     dailyRate: 45000,
     weeklyRate: 280000,
-    image: require('../../../assets/map.png'),
+    image: require('../../../assets/car (5).png'),
     companyName: 'Logistics Pro',
   },
   {
@@ -49,7 +49,7 @@ const HIRE_VEHICLES: VehicleHireItem[] = [
     availableCount: 0, // NONE AVAILABLE
     dailyRate: 55000,
     weeklyRate: 340000,
-    image: require('../../../assets/map.png'),
+    image: require('../../../assets/car (6).png'),
     companyName: 'Swift Haulage',
   },
   {
@@ -60,7 +60,7 @@ const HIRE_VEHICLES: VehicleHireItem[] = [
     availableCount: 2,
     dailyRate: 120000,
     weeklyRate: 750000,
-    image: require('../../../assets/map.png'),
+    image: require('../../../assets/car (7).png'),
     companyName: 'Titan Logistics',
     isShieldBadge: true,
   },

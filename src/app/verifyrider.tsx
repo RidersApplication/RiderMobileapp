@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import AppHeader from '../components/app-header';
+
 import BottomTab from '../components/bottom-tab';
 
 export default function VerifyRider() {
@@ -124,7 +124,7 @@ export default function VerifyRider() {
       {/* Bottom Map Overlay with Safety Tip */}
       <View style={styles.bottomMapSection}>
         <Image
-          source={require('../../assets/map.png')}
+          source={require('../../assets/downmap.png')}
           style={styles.mapBackground}
           resizeMode="cover"
         />

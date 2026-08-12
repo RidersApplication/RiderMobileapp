@@ -13,7 +13,7 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomTab from '../components/bottom-tab';
 
@@ -102,7 +102,7 @@ export default function RideHistoryScreen() {
 
   const handleRebook = () => {
     setDetailsModalVisible(false);
-    router.push('/map-home');
+    router.push('/map-home' as Href);
   };
 
   return (

@@ -110,7 +110,7 @@ export default function AppHeader({
 
           <TouchableOpacity
             style={[styles.userRow, showBackButton && { marginLeft: 12 }]}
-            onPress={() => router.push('/profile')}
+            onPress={() => router.push('/profile' as any)}
             activeOpacity={0.8}
             accessibilityLabel="Open Profile"
           >

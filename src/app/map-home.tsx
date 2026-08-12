@@ -10,7 +10,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, Href } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import BottomTab from "../components/bottom-tab";
@@ -22,7 +22,7 @@ export default function MapHomeScreen() {
   const [destination, setDestination] = useState("T Building Wuse 2");
 
   const goToPriceRange = (selectedDestination: string) => {
-    router.push(`/price-range?destination=${encodeURIComponent(selectedDestination)}`);
+    router.push({ pathname: "/price-range", params: { destination: selectedDestination } } as any);
   };
 
   return (

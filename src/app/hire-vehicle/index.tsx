@@ -46,7 +46,7 @@ export default function UpgradePlanScreen() {
         {/* Upgrade Hero Image Card */}
         <View style={styles.heroCard}>
           <Image
-            source={require('../../../assets/map.png')}
+            source={require('../../../assets/car (2).png')}
             style={styles.heroImage}
             resizeMode="cover"
           />
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   heroOverlay: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.45)',
   },
   heroContent: {

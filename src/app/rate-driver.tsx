@@ -15,7 +15,7 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TAG_OPTIONS = [
@@ -70,7 +70,7 @@ export default function RateDriver() {
       [
         {
           text: 'OK',
-          onPress: () => router.replace('/home'),
+          onPress: () => router.replace('/home' as Href),
         },
       ]
     );
@@ -88,7 +88,7 @@ export default function RateDriver() {
       [
         {
           text: 'OK',
-          onPress: () => router.replace('/home'),
+          onPress: () => router.replace('/home' as Href),
         },
       ]
     );
@@ -102,7 +102,7 @@ export default function RateDriver() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.closeButton}
-          onPress={() => router.replace('/home')}
+          onPress={() => router.replace('/home' as Href)}
           activeOpacity={0.7}
           accessibilityLabel="Close rating"
         >

@@ -2,13 +2,13 @@ import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from 'expo-router';
 import React, { useState } from "react";
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
 
 export default function RegisterScreen() {
@@ -44,12 +44,13 @@ export default function RegisterScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-        <Ionicons name="chevron-back" size={22} color="#333"/>
+        <Ionicons name="chevron-back" size={22} color="#333" />
       </TouchableOpacity>
 
       <Text style={styles.title}>Hello! Register to get{"\n"}started</Text>
 
-      <TextInput placeholder="Username" style={styles.input} value={username} onChangeText={setUsername} />
+      <TextInput placeholder="Username" style={styles.input}
+        placeholderTextColor="#7b8794" value={username} onChangeText={setUsername} />
       <TextInput placeholder="Email" style={styles.input} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
       <TextInput placeholder="Password" style={styles.input} value={password} onChangeText={setPassword} secureTextEntry />
       <TextInput placeholder="Confirm password" style={styles.input} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
@@ -59,22 +60,22 @@ export default function RegisterScreen() {
       </TouchableOpacity>
 
       <View style={styles.dividerRow}>
-        <View style={styles.line}/>
+        <View style={styles.line} />
         <Text style={styles.or}>Or Register with</Text>
-        <View style={styles.line}/>
+        <View style={styles.line} />
       </View>
 
       <View style={styles.socialRow}>
         <TouchableOpacity style={styles.socialBtn}>
-          <FontAwesome name="facebook" size={20} color="#1877F2"/>
+          <FontAwesome name="facebook" size={20} color="#1877F2" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.socialBtn}>
-          <AntDesign name="google" size={20} color="#DB4437"/>
+          <AntDesign name="google" size={20} color="#DB4437" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.socialBtn}>
-          <AntDesign name="apple" size={20} color="black"/>
+          <AntDesign name="apple" size={20} color="black" />
         </TouchableOpacity>
       </View>
 
@@ -119,6 +120,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     marginBottom: 15,
+    color: "#2e3237",
   },
   registerBtn: {
     backgroundColor: "#d96c0b",

@@ -71,7 +71,7 @@ export default function HireDashboardScreen() {
 
           <View style={styles.vehicleImageWrap}>
             <Image
-              source={require('../../../assets/map.png')}
+              source={require('../../../assets/car (5).png')}
               style={styles.vehicleImage}
               resizeMode="cover"
             />

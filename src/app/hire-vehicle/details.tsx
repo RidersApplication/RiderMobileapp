@@ -46,7 +46,7 @@ export default function VehicleDetailsScreen() {
         {/* ================= SECTION 1 (IMAGE 4): HERO & SPECS ================= */}
         <View style={styles.heroWrap}>
           <Image
-            source={require('../../../assets/map.png')}
+            source={require('../../../assets/car (5).png')}
             style={styles.heroImage}
             resizeMode="cover"
           />

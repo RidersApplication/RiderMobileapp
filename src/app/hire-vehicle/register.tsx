@@ -103,7 +103,7 @@ export default function BusinessRegistrationScreen() {
           {/* Hero Warehouse Photo Card */}
           <View style={styles.heroCard}>
             <Image
-              source={require('../../../assets/map.png')}
+              source={require('../../../assets/car2 (1).png')}
               style={styles.heroImage}
               resizeMode="cover"
             />
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   heroOverlay: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.45)',
   },
   heroContent: {
