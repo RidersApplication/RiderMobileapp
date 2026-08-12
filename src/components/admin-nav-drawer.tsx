@@ -17,9 +17,18 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 interface AdminNavProps {
   title?: string;
   activeRoute?: string;
+  adminName?: string;
+  adminRole?: string;
+  onEditProfilePress?: () => void;
 }
 
-export default function AdminNavDrawer({ title, activeRoute }: AdminNavProps) {
+export default function AdminNavDrawer({
+  title,
+  activeRoute,
+  adminName = 'Alex Uercer',
+  adminRole = 'System Admin',
+  onEditProfilePress,
+}: AdminNavProps) {
   const router = useRouter();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -32,7 +41,7 @@ export default function AdminNavDrawer({ title, activeRoute }: AdminNavProps) {
     { label: 'Bookings', route: '/admin/dashboard', icon: 'calendar-outline' },
     { label: 'Payments', route: '/admin/dashboard', icon: 'card-outline' },
     { label: 'Verification', route: '/admin/verification', icon: 'shield-checkmark-outline' },
-    { label: 'Support', route: '/admin/dashboard', icon: 'help-circle-outline' },
+    { label: 'Support', route: '/admin/support', icon: 'help-circle-outline' },
   ];
 
   const handleNavigate = (route: string) => {
@@ -67,6 +76,16 @@ export default function AdminNavDrawer({ title, activeRoute }: AdminNavProps) {
               <Text style={styles.logoSubtext}>LOGISTICS CONTROL</Text>
             </View>
           </TouchableOpacity>
+
+          {/* GO BACK TO MAIN PAGE BUTTON IN TOP NAVBAR */}
+          <TouchableOpacity
+            style={styles.topBackMainBtn}
+            onPress={() => router.replace('/' as any)}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="arrow-back" size={14} color="#8C531B" style={{ marginRight: 4 }} />
+            <Text style={styles.topBackMainText}>Main Page</Text>
+          </TouchableOpacity>
         </View>
 
         {/* SEARCH INPUT BAR (HIDDEN ON VERY SMALL PHONES) */}
@@ -96,7 +115,13 @@ export default function AdminNavDrawer({ title, activeRoute }: AdminNavProps) {
 
           <TouchableOpacity
             style={styles.profileAvatarWrapper}
-            onPress={() => router.push('/admin/login' as any)}
+            onPress={() => {
+              if (onEditProfilePress) {
+                onEditProfilePress();
+              } else {
+                setDrawerOpen(true);
+              }
+            }}
             activeOpacity={0.8}
           >
             <Image
@@ -172,20 +197,43 @@ export default function AdminNavDrawer({ title, activeRoute }: AdminNavProps) {
                   </TouchableOpacity>
                 );
               })}
+
+              {/* GO BACK TO MAIN PAGE BUTTON IN DRAWER */}
+              <TouchableOpacity
+                style={styles.drawerBackMainBtn}
+                onPress={() => {
+                  setDrawerOpen(false);
+                  router.replace('/' as any);
+                }}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="home" size={18} color="#8C531B" style={{ marginRight: 10 }} />
+                <Text style={styles.drawerBackMainText}>Go Back to Main Page</Text>
+                <Ionicons name="arrow-forward" size={14} color="#8C531B" />
+              </TouchableOpacity>
             </View>
 
             {/* DRAWER FOOTER ADMIN PROFILE */}
             <View style={styles.drawerFooter}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity
+                style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}
+                onPress={() => {
+                  setDrawerOpen(false);
+                  if (onEditProfilePress) {
+                    onEditProfilePress();
+                  }
+                }}
+                activeOpacity={0.8}
+              >
                 <Image
                   source={require('../../assets/driver_avatar.png')}
                   style={styles.footerAvatar}
                 />
                 <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.footerAdminName}>Alex Uercer</Text>
-                  <Text style={styles.footerAdminRole}>System Admin</Text>
+                  <Text style={styles.footerAdminName}>{adminName}</Text>
+                  <Text style={styles.footerAdminRole}>{adminRole}</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.logoutBtn}
@@ -222,7 +270,23 @@ const styles = StyleSheet.create({
   navLeftRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
+  },
+  topBackMainBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF0E6',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: '#F07D3B',
+    marginLeft: 4,
+  },
+  topBackMainText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#8C531B',
   },
   hamburgerBtn: {
     padding: 6,
@@ -345,6 +409,23 @@ const styles = StyleSheet.create({
   drawerList: {
     flex: 1,
     gap: 6,
+  },
+  drawerBackMainBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF0E6',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#F07D3B',
+  },
+  drawerBackMainText: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#8C531B',
   },
   drawerItem: {
     flexDirection: 'row',

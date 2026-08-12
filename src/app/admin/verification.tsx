@@ -121,19 +121,16 @@ export default function AdminVerificationScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* PAGE HEADER & SYSTEM STATUS BANNER */}
-        <View style={styles.headerRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.breadcrumbText}>Logistics Pulse</Text>
-            <Text style={styles.pageTitle}>Verification Requests</Text>
-            <Text style={styles.pageSub}>
-              Manage and validate entity identities across the Logistics Pulse network. Accuracy ensures system integrity.
-            </Text>
-          </View>
-
+        <View style={styles.pageHeaderCard}>
           <View style={styles.systemStatusPill}>
             <View style={styles.brownPulseDot} />
             <Text style={styles.systemStatusText}>SYSTEM STATUS: OPERATIONAL</Text>
           </View>
+
+          <Text style={styles.pageTitleUnderStatus}>Verification Requests</Text>
+          <Text style={styles.pageSubUnderStatus}>
+            Manage and validate entity identities across the Logistics Pulse network. Accuracy ensures system integrity.
+          </Text>
         </View>
 
         {/* CATEGORY TABS ROW */}
@@ -419,31 +416,13 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     gap: 18,
   },
-  headerRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: 14,
-  },
-  breadcrumbText: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#8C531B',
-    letterSpacing: 0.8,
-    marginBottom: 4,
-  },
-  pageTitle: {
-    fontSize: 30,
-    fontWeight: '900',
-    color: '#1F2937',
-    marginBottom: 6,
-  },
-  pageSub: {
-    fontSize: 13,
-    color: '#6E6663',
-    lineHeight: 18,
-    maxWidth: 580,
+  pageHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#F3ECE9',
+    gap: 8,
   },
   systemStatusPill: {
     flexDirection: 'row',
@@ -452,6 +431,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 14,
+    alignSelf: 'flex-start',
+  },
+  pageTitleUnderStatus: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#1F2937',
+    marginTop: 4,
+  },
+  pageSubUnderStatus: {
+    fontSize: 13,
+    color: '#6E6663',
+    lineHeight: 19,
   },
   brownPulseDot: {
     width: 7,

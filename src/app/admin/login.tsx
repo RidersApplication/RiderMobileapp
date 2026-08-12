@@ -54,6 +54,15 @@ export default function AdminLoginScreen() {
           </View>
           <Text style={styles.logoText}>RIDERS</Text>
         </View>
+
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+          onPress={() => router.replace('/' as any)}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="arrow-back" size={16} color="#8C531B" style={{ marginRight: 4 }} />
+          <Text style={{ fontSize: 12, fontWeight: '800', color: '#8C531B' }}>Go Back to Main Page</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -150,6 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 24,
     borderBottomWidth: 1,
     borderBottomColor: '#F3ECE9',
@@ -268,6 +278,22 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: 0.8,
+  },
+  backMainAppCardBtn: {
+    flexDirection: 'row',
+    height: 48,
+    backgroundColor: '#FFF0E6',
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#F07D3B',
+  },
+  backMainAppCardText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#8C531B',
   },
   footer: {
     backgroundColor: '#FFFFFF',

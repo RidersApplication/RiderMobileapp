@@ -49,7 +49,7 @@ export default function PricingSummaryScreen() {
         <View style={styles.vehicleHeaderCard}>
           <View style={styles.vehicleImageWrap}>
             <Image
-              source={require('../../../assetscar (5).png')}
+              source={require('../../../assets/car (5).png')}
               style={styles.vehicleImage}
               resizeMode="cover"
             />

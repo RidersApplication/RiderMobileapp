@@ -50,10 +50,10 @@ export default function RegisterScreen() {
       <Text style={styles.title}>Hello! Register to get{"\n"}started</Text>
 
       <TextInput placeholder="Username" style={styles.input}
-        placeholderTextColor="#7b8794" value={username} onChangeText={setUsername} />
-      <TextInput placeholder="Email" style={styles.input} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-      <TextInput placeholder="Password" style={styles.input} value={password} onChangeText={setPassword} secureTextEntry />
-      <TextInput placeholder="Confirm password" style={styles.input} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+        placeholderTextColor="#000000" value={username} onChangeText={setUsername} />
+      <TextInput placeholder="Email" style={styles.input} placeholderTextColor="#000000" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+      <TextInput placeholder="Password" style={styles.input} placeholderTextColor="#000000" value={password} onChangeText={setPassword} secureTextEntry />
+      <TextInput placeholder="Confirm password" style={styles.input} placeholderTextColor="#000000" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
 
       <TouchableOpacity style={styles.registerBtn} onPress={handleRegister}>
         <Text style={styles.registerText}>Register</Text>

@@ -30,25 +30,25 @@ const CATEGORIES: CategoryItem[] = [
     id: 'suv',
     name: 'SUV',
     desc: 'Robust performance for field work and rough terrains',
-    image: require('../../../assets/car(1).png'),
+    image: require('../../../assets/car1.png'),
   },
   {
     id: 'bus',
     name: 'Bus',
     desc: 'High-capacity seating for group transport',
-    image: require('../../../assets/car(2).png'),
+    image: require('../../../assets/car (2).png'),
   },
   {
     id: 'light-truck',
     name: 'Light Truck',
     desc: 'Efficient for small cargo and urban deliveries',
-    image: require('../../../assets/car(3).png'),
+    image: require('../../../assets/car (3).png'),
   },
   {
     id: 'heavy-truck',
     name: 'Heavy Truck',
     desc: 'For large-scale logistics and haulage',
-    image: require('../../../assets/car(4).png'),
+    image: require('../../../assets/car (4).png'),
   },
 ];
 

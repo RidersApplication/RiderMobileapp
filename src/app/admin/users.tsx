@@ -12,6 +12,7 @@ import {
   Alert,
   Modal,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -31,11 +32,26 @@ export interface UserItem {
 export default function AdminUsersScreen() {
   const router = useRouter();
 
+  // Admin Profile State
+  const [adminProfile, setAdminProfile] = useState({
+    name: 'Alex Uercer',
+    email: 'alex.uercer@logistics.co',
+    role: 'System Administrator',
+  });
+
+  // Edit Admin Profile Modal State
+  const [showEditAdminModal, setShowEditAdminModal] = useState(false);
+  const [editAdminName, setEditAdminName] = useState(adminProfile.name);
+  const [editAdminEmail, setEditAdminEmail] = useState(adminProfile.email);
+  const [editAdminRole, setEditAdminRole] = useState(adminProfile.role);
+  const [saveAdminState, setSaveAdminState] = useState<'IDLE' | 'SAVING' | 'SUCCESS'>('IDLE');
+
+  // Filter States
   const [accountTypeFilter, setAccountTypeFilter] = useState('All Accounts');
   const [accountStatusFilter, setAccountStatusFilter] = useState('All Statuses');
   const [lastActiveFilter, setLastActiveFilter] = useState('Anytime');
 
-  // Modals
+  // Create User Modal State
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newUserName, setNewUserName] = useState('');
   const [newUserEmail, setNewUserEmail] = useState('');
@@ -75,6 +91,29 @@ export default function AdminUsersScreen() {
       activity: '1,402 Rides • Last used 5h ago',
     },
   ]);
+
+  // Handle Edit Admin Profile Save
+  const handleSaveAdminProfile = () => {
+    if (!editAdminName.trim() || !editAdminEmail.trim()) {
+      Alert.alert('Validation Error', 'Admin name and email address are required.');
+      return;
+    }
+
+    setSaveAdminState('SAVING');
+    setTimeout(() => {
+      setSaveAdminState('SUCCESS');
+      setAdminProfile({
+        name: editAdminName,
+        email: editAdminEmail,
+        role: editAdminRole,
+      });
+
+      setTimeout(() => {
+        setSaveAdminState('IDLE');
+        setShowEditAdminModal(false);
+      }, 900);
+    }, 600);
+  };
 
   const handleExportData = () => {
     Alert.alert(
@@ -139,8 +178,33 @@ export default function AdminUsersScreen() {
     ]);
   };
 
+  // FULLY FUNCTIONAL DYNAMIC FILTER LOGIC
   const filteredUsers = users.filter((u) => {
-    if (accountTypeFilter !== 'All Accounts' && u.role !== accountTypeFilter) return false;
+    // 1. Account Type Filter
+    if (accountTypeFilter !== 'All Accounts' && u.role !== accountTypeFilter) {
+      return false;
+    }
+    // 2. Account Status Filter
+    if (accountStatusFilter !== 'All Statuses') {
+      if (accountStatusFilter === 'Active Now' && u.status !== 'ACTIVE NOW' && u.status !== 'ACTIVE') {
+        return false;
+      }
+      if (accountStatusFilter === 'Pending Approval' && u.status !== 'PENDING APPROVAL') {
+        return false;
+      }
+      if (accountStatusFilter === 'Suspended' && u.status !== 'SUSPENDED') {
+        return false;
+      }
+    }
+    // 3. Last Active Filter
+    if (lastActiveFilter !== 'Anytime') {
+      if (lastActiveFilter === 'Today' && !u.activity.includes('m ago') && !u.activity.includes('h ago') && !u.activity.includes('now')) {
+        return false;
+      }
+      if (lastActiveFilter === 'This Week' && u.activity.includes('3d ago')) {
+        return false;
+      }
+    }
     return true;
   });
 
@@ -148,23 +212,54 @@ export default function AdminUsersScreen() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-      {/* TOP NAVBAR & HAMBURGER DRAWER */}
-      <AdminNavDrawer activeRoute="Users" />
+      {/* TOP NAVBAR & HAMBURGER DRAWER WITH ADMIN PROFILE */}
+      <AdminNavDrawer
+        activeRoute="Users"
+        adminName={adminProfile.name}
+        adminRole={adminProfile.role}
+        onEditProfilePress={() => {
+          setEditAdminName(adminProfile.name);
+          setEditAdminEmail(adminProfile.email);
+          setEditAdminRole(adminProfile.role);
+          setShowEditAdminModal(true);
+        }}
+      />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* PAGE HEADER */}
-        <View style={styles.pageHeaderRow}>
-          <View style={{ flex: 1 }}>
+        {/* REARRANGED ADMINISTRATION PAGE HEADER */}
+        <View style={styles.pageHeaderCard}>
+          {/* 1. ADMINISTRATION & USER MANAGEMENT TITLE ABOVE ALEX UERCER DIV */}
+          <View>
             <Text style={styles.breadcrumbLabel}>ADMINISTRATION</Text>
             <Text style={styles.pageTitle}>User Management</Text>
-            <Text style={styles.pageSub}>
-              Oversee your ecosystem. Manage permissions, track activity, and ensure seamless coordination across all nodes.
-            </Text>
           </View>
 
+          {/* 2. ALEX UERCER ADMIN PROFILE DIV DIRECTLY UNDER TITLE */}
+          <TouchableOpacity
+            style={styles.adminProfileHeaderCard}
+            onPress={() => {
+              setEditAdminName(adminProfile.name);
+              setEditAdminEmail(adminProfile.email);
+              setEditAdminRole(adminProfile.role);
+              setShowEditAdminModal(true);
+            }}
+            activeOpacity={0.85}
+          >
+            <Image
+              source={require('../../../assets/driver_avatar.png')}
+              style={styles.adminHeaderAvatar}
+            />
+            <View style={{ marginLeft: 8 }}>
+              <Text style={styles.adminHeaderName}>{adminProfile.name}</Text>
+              <Text style={styles.adminHeaderRole}>{adminProfile.role}</Text>
+            </View>
+            <Feather name="edit-3" size={14} color="#F07D3B" style={{ marginLeft: 8 }} />
+          </TouchableOpacity>
+
+          {/* 3. TWO ACTION BUTTONS UNDER ALEX UERCER DIV */}
           <View style={styles.headerActionsRow}>
             <TouchableOpacity
               style={styles.exportBtn}
@@ -184,6 +279,11 @@ export default function AdminUsersScreen() {
               <Text style={styles.createUserBtnText}>Create New User</Text>
             </TouchableOpacity>
           </View>
+
+          {/* 4. SUBTITLE UNDER BUTTONS */}
+          <Text style={styles.pageSubUnderButtons}>
+            Oversee your ecosystem. Manage permissions, track activity, and ensure seamless coordination across all nodes.
+          </Text>
         </View>
 
         {/* FILTER CONTROLS BAR */}
@@ -247,7 +347,7 @@ export default function AdminUsersScreen() {
 
             <TouchableOpacity
               style={styles.applyFilterBtn}
-              onPress={() => Alert.alert('Filters Applied', 'User management list refreshed.')}
+              onPress={() => Alert.alert('Filters Applied', `Showing ${filteredUsers.length} matching accounts.`)}
               activeOpacity={0.88}
             >
               <Feather name="sliders" size={14} color="#FFFFFF" style={{ marginRight: 6 }} />
@@ -256,140 +356,148 @@ export default function AdminUsersScreen() {
           </View>
         </View>
 
-        {/* USERS LIST / TABLE */}
+        {/* USERS LIST / TABLE WITH OPTIMIZED REDUCED FONT SIZES */}
         <View style={styles.usersList}>
-          {/* TABLE HEADINGS FOR DESKTOP */}
+          {/* TABLE HEADINGS WITH REDUCED COMPACT FONT */}
           <View style={styles.tableHeaderRow}>
             <Text style={[styles.thText, { flex: 2 }]}>USER IDENTITY</Text>
-            <Text style={[styles.thText, { flex: 1 }]}>ACCOUNT ROLE</Text>
-            <Text style={[styles.thText, { flex: 1 }]}>STATUS</Text>
+            <Text style={[styles.thText, { flex: 1.1 }]}>ACCOUNT ROLE</Text>
+            <Text style={[styles.thText, { flex: 1.1 }]}>STATUS</Text>
             <Text style={[styles.thText, { flex: 1.5 }]}>ACTIVITY</Text>
             <Text style={[styles.thText, { flex: 1, textAlign: 'right' }]}>OPERATIONS</Text>
           </View>
 
-          {filteredUsers.map((u) => (
-            <View key={u.id} style={styles.userRowCard}>
-              {/* IDENTITY */}
-              <View style={styles.userIdentityCol}>
-                <Image
-                  source={require('../../../assets/driver_avatar.png')}
-                  style={styles.userAvatar}
-                />
-                <View>
-                  <Text style={styles.userNameText}>{u.name}</Text>
-                  <Text style={styles.userEmailText}>{u.email}</Text>
+          {filteredUsers.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Ionicons name="filter-outline" size={32} color="#9CA3AF" />
+              <Text style={styles.emptyTitle}>No matching accounts found</Text>
+              <Text style={styles.emptySub}>Try adjusting your filter options above.</Text>
+            </View>
+          ) : (
+            filteredUsers.map((u) => (
+              <View key={u.id} style={styles.userRowCard}>
+                {/* USER IDENTITY */}
+                <View style={styles.userIdentityCol}>
+                  <Image
+                    source={require('../../../assets/driver_avatar.png')}
+                    style={styles.userAvatar}
+                  />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.userNameText}>{u.name}</Text>
+                    <Text style={styles.userEmailText}>{u.email}</Text>
+                  </View>
                 </View>
-              </View>
 
-              {/* ROLE */}
-              <View style={styles.roleCol}>
-                <View style={styles.roleBadge}>
-                  <Text style={styles.roleBadgeText}>{u.role}</Text>
+                {/* ACCOUNT ROLE */}
+                <View style={styles.roleCol}>
+                  <View style={styles.roleBadge}>
+                    <Text style={styles.roleBadgeText}>{u.role}</Text>
+                  </View>
                 </View>
-              </View>
 
-              {/* STATUS */}
-              <View style={styles.statusCol}>
-                <View
-                  style={[
-                    styles.statusBadge,
-                    u.status === 'ACTIVE NOW' || u.status === 'ACTIVE'
-                      ? styles.statusActive
-                      : u.status === 'PENDING APPROVAL'
-                      ? styles.statusPending
-                      : styles.statusSuspended,
-                  ]}
-                >
+                {/* STATUS */}
+                <View style={styles.statusCol}>
                   <View
                     style={[
-                      styles.statusDot,
+                      styles.statusBadge,
                       u.status === 'ACTIVE NOW' || u.status === 'ACTIVE'
-                        ? styles.dotActive
+                        ? styles.statusActive
                         : u.status === 'PENDING APPROVAL'
-                        ? styles.dotPending
-                        : styles.dotSuspended,
-                    ]}
-                  />
-                  <Text
-                    style={[
-                      styles.statusText,
-                      u.status === 'ACTIVE NOW' || u.status === 'ACTIVE'
-                        ? styles.stTextActive
-                        : u.status === 'PENDING APPROVAL'
-                        ? styles.stTextPending
-                        : styles.stTextSuspended,
+                          ? styles.statusPending
+                          : styles.statusSuspended,
                     ]}
                   >
-                    {u.status}
-                  </Text>
+                    <View
+                      style={[
+                        styles.statusDot,
+                        u.status === 'ACTIVE NOW' || u.status === 'ACTIVE'
+                          ? styles.dotActive
+                          : u.status === 'PENDING APPROVAL'
+                            ? styles.dotPending
+                            : styles.dotSuspended,
+                      ]}
+                    />
+                    <Text
+                      style={[
+                        styles.statusText,
+                        u.status === 'ACTIVE NOW' || u.status === 'ACTIVE'
+                          ? styles.stTextActive
+                          : u.status === 'PENDING APPROVAL'
+                            ? styles.stTextPending
+                            : styles.stTextSuspended,
+                      ]}
+                    >
+                      {u.status}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* ACTIVITY */}
+                <View style={styles.activityCol}>
+                  <Text style={styles.activityText}>{u.activity}</Text>
+                </View>
+
+                {/* OPERATIONS */}
+                <View style={styles.operationsCol}>
+                  {u.status === 'SUSPENDED' ? (
+                    <TouchableOpacity
+                      style={styles.reactivateBtn}
+                      onPress={() => handleToggleSuspend(u.id, u.status)}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.reactivateBtnText}>REACTIVATE</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={styles.opIconButtonsRow}>
+                      {u.status === 'PENDING APPROVAL' && (
+                        <TouchableOpacity
+                          style={styles.opIconBtn}
+                          onPress={() => handleApproveUser(u.id)}
+                          activeOpacity={0.7}
+                        >
+                          <Ionicons name="checkmark-circle-outline" size={18} color="#0D9488" />
+                        </TouchableOpacity>
+                      )}
+
+                      <TouchableOpacity
+                        style={styles.opIconBtn}
+                        onPress={() => Alert.alert('Edit Permissions', `Editing account node ${u.name}...`)}
+                        activeOpacity={0.7}
+                      >
+                        <Feather name="edit-2" size={15} color="#6E6663" />
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.opIconBtn}
+                        onPress={() => handleToggleSuspend(u.id, u.status)}
+                        activeOpacity={0.7}
+                      >
+                        <MaterialCommunityIcons name="block-helper" size={15} color="#EF4444" />
+                      </TouchableOpacity>
+
+                      {u.status === 'PENDING APPROVAL' && (
+                        <TouchableOpacity
+                          style={styles.opIconBtn}
+                          onPress={() => handleDeleteUser(u.id)}
+                          activeOpacity={0.7}
+                        >
+                          <Ionicons name="trash-outline" size={15} color="#EF4444" />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  )}
                 </View>
               </View>
-
-              {/* ACTIVITY */}
-              <View style={styles.activityCol}>
-                <Text style={styles.activityText}>{u.activity}</Text>
-              </View>
-
-              {/* OPERATIONS ACTIONS */}
-              <View style={styles.operationsCol}>
-                {u.status === 'SUSPENDED' ? (
-                  <TouchableOpacity
-                    style={styles.reactivateBtn}
-                    onPress={() => handleToggleSuspend(u.id, u.status)}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={styles.reactivateBtnText}>REACTIVATE</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <View style={styles.opIconButtonsRow}>
-                    {u.status === 'PENDING APPROVAL' && (
-                      <TouchableOpacity
-                        style={styles.opIconBtn}
-                        onPress={() => handleApproveUser(u.id)}
-                        activeOpacity={0.7}
-                      >
-                        <Ionicons name="checkmark-circle-outline" size={20} color="#0D9488" />
-                      </TouchableOpacity>
-                    )}
-
-                    <TouchableOpacity
-                      style={styles.opIconBtn}
-                      onPress={() => Alert.alert('Edit Permissions', `Editing account node ${u.name}...`)}
-                      activeOpacity={0.7}
-                    >
-                      <Feather name="edit-2" size={16} color="#6E6663" />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={styles.opIconBtn}
-                      onPress={() => handleToggleSuspend(u.id, u.status)}
-                      activeOpacity={0.7}
-                    >
-                      <MaterialCommunityIcons name="block-helper" size={16} color="#EF4444" />
-                    </TouchableOpacity>
-
-                    {u.status === 'PENDING APPROVAL' && (
-                      <TouchableOpacity
-                        style={styles.opIconBtn}
-                        onPress={() => handleDeleteUser(u.id)}
-                        activeOpacity={0.7}
-                      >
-                        <Ionicons name="trash-outline" size={16} color="#EF4444" />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                )}
-              </View>
-            </View>
-          ))}
+            ))
+          )}
         </View>
 
         {/* PAGINATION */}
         <View style={styles.paginationRow}>
-          <Text style={styles.showingText}>Showing 4 of 1,280 accounts</Text>
+          <Text style={styles.showingText}>Showing {filteredUsers.length} of 1,280 accounts</Text>
           <View style={styles.pagesRow}>
             <TouchableOpacity style={styles.pageArrowBtn} activeOpacity={0.7}>
-              <Ionicons name="chevron-back" size={16} color="#6E6663" />
+              <Ionicons name="chevron-back" size={14} color="#6E6663" />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.pageBtn, styles.pageBtnActive]} activeOpacity={0.8}>
               <Text style={styles.pageBtnActiveText}>1</Text>
@@ -405,11 +513,95 @@ export default function AdminUsersScreen() {
               <Text style={styles.pageBtnText}>42</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.pageArrowBtn} activeOpacity={0.7}>
-              <Ionicons name="chevron-forward" size={16} color="#6E6663" />
+              <Ionicons name="chevron-forward" size={14} color="#6E6663" />
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
+
+      {/* EDIT ADMIN PROFILE MODAL */}
+      <Modal
+        visible={showEditAdminModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowEditAdminModal(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setShowEditAdminModal(false)}>
+          <Pressable style={styles.modalCard} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.modalHandle} />
+            <View style={styles.adminModalAvatarRow}>
+              <Image
+                source={require('../../../assets/driver_avatar.png')}
+                style={styles.modalAdminAvatar}
+              />
+              <View>
+                <Text style={styles.modalTitle}>Edit Admin Profile</Text>
+                <Text style={styles.modalSub}>Update your administrator details below.</Text>
+              </View>
+            </View>
+
+            <View style={styles.modalFormGroup}>
+              <Text style={styles.modalFieldLabel}>Admin Full Name</Text>
+              <TextInput
+                style={styles.modalTextInput}
+                value={editAdminName}
+                onChangeText={setEditAdminName}
+                placeholder="Admin Name"
+              />
+            </View>
+
+            <View style={styles.modalFormGroup}>
+              <Text style={styles.modalFieldLabel}>Admin Email</Text>
+              <TextInput
+                style={styles.modalTextInput}
+                value={editAdminEmail}
+                onChangeText={setEditAdminEmail}
+                keyboardType="email-address"
+                placeholder="admin@riders.logistics"
+              />
+            </View>
+
+            <View style={styles.modalFormGroup}>
+              <Text style={styles.modalFieldLabel}>Administrator Role</Text>
+              <TextInput
+                style={styles.modalTextInput}
+                value={editAdminRole}
+                onChangeText={setEditAdminRole}
+                placeholder="Role (e.g. System Admin)"
+              />
+            </View>
+
+            <TouchableOpacity
+              style={[
+                styles.saveAdminBtn,
+                saveAdminState === 'SUCCESS' && styles.saveAdminBtnSuccess,
+              ]}
+              onPress={handleSaveAdminProfile}
+              disabled={saveAdminState !== 'IDLE'}
+              activeOpacity={0.88}
+            >
+              {saveAdminState === 'SAVING' ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : saveAdminState === 'SUCCESS' ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Ionicons name="checkmark-circle" size={18} color="#FFFFFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.saveAdminBtnText}>Profile Updated ✓</Text>
+                </View>
+              ) : (
+                <Text style={styles.saveAdminBtnText}>Save Admin Profile</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.cancelModalBtn}
+              onPress={() => setShowEditAdminModal(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.cancelModalText}>Cancel</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* CREATE NEW USER MODAL */}
       <Modal
@@ -419,7 +611,7 @@ export default function AdminUsersScreen() {
         onRequestClose={() => setShowCreateModal(false)}
       >
         <Pressable style={styles.modalOverlay} onPress={() => setShowCreateModal(false)}>
-          <Pressable style={styles.createModalCard} onPress={(e) => e.stopPropagation()}>
+          <Pressable style={styles.modalCard} onPress={(e) => e.stopPropagation()}>
             <View style={styles.modalHandle} />
             <Text style={styles.modalTitle}>Create New Account Node</Text>
             <Text style={styles.modalSub}>Enter identity credentials to add a new account to the network.</Text>
@@ -477,11 +669,11 @@ export default function AdminUsersScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.cancelCreateBtn}
+              style={styles.cancelModalBtn}
               onPress={() => setShowCreateModal(false)}
               activeOpacity={0.7}
             >
-              <Text style={styles.cancelCreateText}>Cancel</Text>
+              <Text style={styles.cancelModalText}>Cancel</Text>
             </TouchableOpacity>
           </Pressable>
         </Pressable>
@@ -496,49 +688,81 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAF7F5',
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 16,
+    paddingTop: 16,
     paddingBottom: 40,
-    gap: 18,
+    gap: 16,
   },
-  pageHeaderRow: {
+
+  /* REARRANGED ADMINISTRATION HEADER CARD */
+  pageHeaderCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 22,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#F3ECE9',
+    gap: 14,
+  },
+  titleRowWithBadge: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: 14,
+    alignItems: 'center',
+    gap: 12,
   },
   breadcrumbLabel: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '800',
     color: '#8C531B',
     letterSpacing: 0.8,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   pageTitle: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: '900',
     color: '#1F2937',
-    marginBottom: 6,
   },
-  pageSub: {
+  adminProfileHeaderCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF0E6',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#F07D3B',
+    alignSelf: 'flex-start',
+  },
+  adminHeaderAvatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+  },
+  adminHeaderName: {
     fontSize: 13,
-    color: '#6E6663',
-    lineHeight: 18,
-    maxWidth: 580,
+    fontWeight: '800',
+    color: '#1F2937',
   },
+  adminHeaderRole: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#8C531B',
+  },
+
+  /* ACTION BUTTONS DIRECTLY UNDER TITLE & ABOVE SUBTITLE */
   headerActionsRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     gap: 10,
   },
   exportBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF7F5',
     borderRadius: 14,
     paddingHorizontal: 16,
-    height: 44,
+    height: 42,
     borderWidth: 1,
     borderColor: '#F3ECE9',
   },
@@ -553,13 +777,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#D97706',
     borderRadius: 14,
     paddingHorizontal: 18,
-    height: 44,
+    height: 42,
   },
   createUserBtnText: {
     fontSize: 13,
     fontWeight: '800',
     color: '#FFFFFF',
   },
+
+  /* SUBTITLE WORDS REARRANGED NICELY UNDER THE TWO BUTTONS */
+  pageSubUnderButtons: {
+    fontSize: 13,
+    color: '#6E6663',
+    lineHeight: 19,
+  },
+
+  /* FILTER CONTROLS BAR */
   filterCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
@@ -571,17 +804,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-end',
-    gap: 12,
+    gap: 10,
   },
   filterGroup: {
     flex: 1,
-    minWidth: 140,
+    minWidth: 130,
   },
   filterLabel: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '800',
     color: '#7F7774',
-    letterSpacing: 0.8,
+    letterSpacing: 0.6,
     marginBottom: 6,
   },
   filterDropdown: {
@@ -590,13 +823,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FAF7F5',
     borderRadius: 12,
-    height: 42,
-    paddingHorizontal: 14,
+    height: 40,
+    paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: '#F3ECE9',
   },
   dropdownValueText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
     color: '#1F2937',
   },
@@ -606,14 +839,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#1F2937',
     borderRadius: 12,
-    height: 42,
-    paddingHorizontal: 20,
+    height: 40,
+    paddingHorizontal: 18,
   },
   applyFilterText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '800',
     color: '#FFFFFF',
   },
+
+  /* USERS TABLE & CARD LIST WITH REDUCED FONT SIZES */
   usersList: {
     backgroundColor: '#FFFFFF',
     borderRadius: 22,
@@ -625,56 +860,71 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FAF7F5',
-    paddingHorizontal: 20,
-    paddingVertical: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#F3ECE9',
   },
   thText: {
-    fontSize: 10,
+    fontSize: 8.5,
     fontWeight: '800',
     color: '#7F7774',
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    padding: 30,
+  },
+  emptyTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#1F2937',
+    marginTop: 8,
+  },
+  emptySub: {
+    fontSize: 12,
+    color: '#6E6663',
+    marginTop: 2,
   },
   userRowCard: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#FAF7F5',
-    gap: 10,
+    gap: 8,
   },
   userIdentityCol: {
     flex: 2,
-    minWidth: 200,
+    minWidth: 180,
     flexDirection: 'row',
     alignItems: 'center',
   },
   userAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    marginRight: 12,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    marginRight: 10,
   },
   userNameText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '800',
     color: '#1F2937',
   },
   userEmailText: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#6E6663',
     marginTop: 1,
   },
   roleCol: {
-    flex: 1,
-    minWidth: 90,
+    flex: 1.1,
+    minWidth: 85,
   },
   roleBadge: {
     backgroundColor: '#FAF7F5',
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
     alignSelf: 'flex-start',
@@ -682,18 +932,18 @@ const styles = StyleSheet.create({
     borderColor: '#F3ECE9',
   },
   roleBadgeText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '700',
     color: '#524945',
   },
   statusCol: {
-    flex: 1,
-    minWidth: 130,
+    flex: 1.1,
+    minWidth: 120,
   },
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
     alignSelf: 'flex-start',
@@ -708,10 +958,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
   },
   statusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginRight: 6,
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    marginRight: 5,
   },
   dotActive: {
     backgroundColor: '#16A34A',
@@ -723,7 +973,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#6B7280',
   },
   statusText: {
-    fontSize: 10,
+    fontSize: 9.5,
     fontWeight: '800',
     letterSpacing: 0.3,
   },
@@ -738,57 +988,57 @@ const styles = StyleSheet.create({
   },
   activityCol: {
     flex: 1.5,
-    minWidth: 140,
+    minWidth: 130,
   },
   activityText: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#6E6663',
   },
   operationsCol: {
     flex: 1,
-    minWidth: 100,
+    minWidth: 90,
     alignItems: 'flex-end',
   },
   opIconButtonsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   opIconBtn: {
     padding: 4,
   },
   reactivateBtn: {
     backgroundColor: '#F3ECE9',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
   },
   reactivateBtnText: {
-    fontSize: 10,
+    fontSize: 9.5,
     fontWeight: '800',
     color: '#1F2937',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
   paginationRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 4,
     gap: 10,
   },
   showingText: {
-    fontSize: 12,
+    fontSize: 11.5,
     color: '#6E6663',
   },
   pagesRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   pageArrowBtn: {
-    width: 32,
-    height: 32,
+    width: 30,
+    height: 30,
     borderRadius: 8,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
@@ -797,8 +1047,8 @@ const styles = StyleSheet.create({
     borderColor: '#F3ECE9',
   },
   pageBtn: {
-    width: 32,
-    height: 32,
+    width: 30,
+    height: 30,
     borderRadius: 8,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
@@ -811,19 +1061,18 @@ const styles = StyleSheet.create({
     borderColor: '#8C531B',
   },
   pageBtnText: {
-    fontSize: 12,
+    fontSize: 11.5,
     fontWeight: '700',
     color: '#1F2937',
   },
   pageBtnActiveText: {
-    fontSize: 12,
+    fontSize: 11.5,
     fontWeight: '800',
     color: '#FFFFFF',
   },
   pageDotsText: {
-    fontSize: 12,
+    fontSize: 11.5,
     color: '#9CA3AF',
-    paddingHorizontal: 2,
   },
 
   /* MODAL STYLES */
@@ -832,13 +1081,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.55)',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
-  createModalCard: {
+  modalCard: {
     width: '100%',
     maxWidth: 420,
     backgroundColor: '#FFFFFF',
-    borderRadius: 28,
+    borderRadius: 26,
     padding: 24,
   },
   modalHandle: {
@@ -847,24 +1096,37 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E7EB',
     borderRadius: 2,
     alignSelf: 'center',
+    marginBottom: 14,
+  },
+  adminModalAvatarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
     marginBottom: 16,
   },
+  modalAdminAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: '#F07D3B',
+  },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: '800',
     color: '#1F2937',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   modalSub: {
     fontSize: 12,
     color: '#6E6663',
-    marginBottom: 20,
-  },
-  modalFormGroup: {
     marginBottom: 16,
   },
+  modalFormGroup: {
+    marginBottom: 14,
+  },
   modalFieldLabel: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
     color: '#1F2937',
     marginBottom: 6,
@@ -872,12 +1134,29 @@ const styles = StyleSheet.create({
   modalTextInput: {
     backgroundColor: '#FAF7F5',
     borderRadius: 14,
-    height: 48,
+    height: 46,
     paddingHorizontal: 16,
     fontSize: 14,
     color: '#1F2937',
     borderWidth: 1,
     borderColor: '#F3ECE9',
+  },
+  saveAdminBtn: {
+    height: 48,
+    backgroundColor: '#D97706',
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  saveAdminBtnSuccess: {
+    backgroundColor: '#0D9488',
+  },
+  saveAdminBtnText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
   roleSelectorRow: {
     flexDirection: 'row',
@@ -885,7 +1164,7 @@ const styles = StyleSheet.create({
   },
   roleSelectPill: {
     flex: 1,
-    height: 42,
+    height: 40,
     backgroundColor: '#FAF7F5',
     borderRadius: 12,
     justifyContent: 'center',
@@ -898,7 +1177,7 @@ const styles = StyleSheet.create({
     borderColor: '#F07D3B',
   },
   roleSelectText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
     color: '#6E6663',
   },
@@ -907,26 +1186,26 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   submitCreateBtn: {
-    height: 50,
+    height: 48,
     backgroundColor: '#D97706',
-    borderRadius: 25,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 8,
     marginBottom: 8,
   },
   submitCreateText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '800',
     color: '#FFFFFF',
   },
-  cancelCreateBtn: {
-    height: 40,
+  cancelModalBtn: {
+    height: 38,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  cancelCreateText: {
-    fontSize: 14,
+  cancelModalText: {
+    fontSize: 13,
     fontWeight: '700',
     color: '#6E6663',
   },
